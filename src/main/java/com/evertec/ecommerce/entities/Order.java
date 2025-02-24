@@ -1,6 +1,7 @@
 package com.evertec.ecommerce.entities;
 
 import com.evertec.ecommerce.utils.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,11 +26,15 @@ public class Order {
     @GeneratedValue
     @Column(columnDefinition = "UUID")
     private UUID id;
-    @OneToMany
+    @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'PENDING'")
     private OrderStatus orderStatus;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
